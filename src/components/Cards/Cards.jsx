@@ -1,10 +1,11 @@
 import { shuffle } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { GameContext } from "../../context/Context";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -40,9 +41,12 @@ function getTimerValue(startDate, endDate) {
  * pairsCount - сколько пар будет в игре
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
+
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
+  const { easyMode } = useContext(GameContext);
+
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
 
@@ -73,7 +77,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    setCounter(easyMode ? 3 : 1);
   }
+
+  const maxCounter = easyMode ? 3 : 1;
+  const [counter, setCounter] = useState(maxCounter);
+  const handleCounter = e => {
+    e--;
+    setCounter(e);
+    if (e <= 0) {
+      finishGame(STATUS_LOST);
+    }
+  };
 
   /**
    * Обработка основного действия в игре - открытие карты.
@@ -127,10 +142,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
-      finishGame(STATUS_LOST);
+      handleCounter(counter);
+
+      if (easyMode) {
+        setTimeout(() => {
+          const resetCards = nextCards.map(card => ({
+            ...card,
+            open: false,
+          }));
+          setCards(resetCards);
+        }, 1000);
+      }
       return;
     }
-
     // ... игра продолжается
   };
 
@@ -195,7 +219,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {status === STATUS_IN_PROGRESS ? (
+          <div>
+            <Button onClick={resetGame}>Начать заново</Button>{" "}
+          </div>
+        ) : null}
       </div>
 
       <div className={styles.cards}>
@@ -208,6 +236,16 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             rank={card.rank}
           />
         ))}
+      </div>
+      <div className={styles.counter_wrapper}>
+        {easyMode ? <p className={styles.counter_txt}>Попытки: </p> : ""}
+        {easyMode ? (
+          <p className={styles.counter_counter}>
+            {counter} из {maxCounter}
+          </p>
+        ) : (
+          ""
+        )}
       </div>
 
       {isGameEnded ? (

@@ -1,9 +1,14 @@
 # MVP Карточная игра "Мемо"
 
+Задание 1:
+
+- Запланированное время выполнения: 12 часов
+- Фактически затраченное время: -- часов
+
 В этом репозитории реализован MVP карточкой игры "Мемо" по [тех.заданию](./docs/mvp-spec.md)
 
 Проект задеплоен на gh pages:
-https://skypro-web-developer.github.io/react-memo/
+<https://skypro-web-developer.github.io/react-memo/>
 
 ## Разработка
 
