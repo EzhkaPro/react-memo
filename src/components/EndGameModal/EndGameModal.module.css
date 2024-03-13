@@ -1,6 +1,5 @@
 .modal {
   width: 480px;
-  height: 459px;
   border-radius: 12px;
   background: #c2f5ff;
   display: flex;
@@ -25,6 +24,7 @@
   line-height: 48px;
 
   margin-bottom: 28px;
+  text-align: center;
 }
 
 .description {
@@ -47,5 +47,35 @@
   font-weight: 400;
   line-height: 72px;
 
-  margin-bottom: 40px;
+  margin-bottom: 10px;
+}
+
+.linkBoard {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: #004980;
+  text-decoration: underline;
+  font-weight: 400;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
+}
+
+.linkBoard:hover {
+  color: #000;
+}
+
+.input_user {
+  width: 246px;
+  height: 45px;
+  top: 334px;
+  left: 374px;
+  border-radius: 10px;
+  font-family: StratosSkyeng;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0em;
+  text-align: center;
+  border: none;
+  color: #000;
 }

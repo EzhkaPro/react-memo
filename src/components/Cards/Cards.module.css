@@ -72,6 +72,12 @@
   margin-bottom: -12px;
 }
 
+.reset {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .counter_txt {
   margin-top: 8px;
   color: #fff;

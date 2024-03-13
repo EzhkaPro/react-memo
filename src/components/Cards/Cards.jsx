@@ -220,8 +220,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           )}
         </div>
         {status === STATUS_IN_PROGRESS ? (
-          <div>
-            <Button onClick={resetGame}>Начать заново</Button>{" "}
+          <div className={styles.reset}>
+            <Button onClick={resetGame}>Начать заново</Button>
           </div>
         ) : null}
       </div>

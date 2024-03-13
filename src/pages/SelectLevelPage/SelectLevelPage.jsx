@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { Button } from "../../components/Button/Button";
 import { useContext } from "react";
@@ -53,10 +53,28 @@ export function SelectLevelPage() {
         </ul>
 
         <div>
-          <input type="checkbox" checked={easyMode} onChange={() => setEasyMode(!easyMode)} />
+          <input
+            type="checkbox"
+            checked={easyMode}
+            onChange={() => setEasyMode(!easyMode)}
+            className={styles.checkbox}
+          />
           <span className={styles.span}>Легкий режим (3 жизни)</span>
         </div>
-        <Button onClick={handlePlayClick}>Играть</Button>
+
+        <div>
+          {level === null ? (
+            <Button disabled>Играть</Button>
+          ) : (
+            <Button className={styles.button} onClick={handlePlayClick}>
+              Играть
+            </Button>
+          )}
+        </div>
+
+        <Link className={styles.leaderboard} to="/leaderboard">
+          Перейти к лидерборду
+        </Link>
       </div>
     </div>
   );

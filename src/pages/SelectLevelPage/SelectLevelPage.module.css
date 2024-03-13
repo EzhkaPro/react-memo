@@ -64,6 +64,10 @@
   color: #0080c1;
 }
 
+.checkbox {
+  color: #7ac100;
+}
+
 .checked {
   color: #7ac100;
   text-align: center;
@@ -87,4 +91,14 @@ input[type="radio"] {
   font-weight: 400;
   line-height: 32px;
   padding-left: 10px;
+}
+
+.leaderboard {
+  font-family: StratosSkyeng;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px;
+  padding-left: 10px;
+  color: #004980;
 }
