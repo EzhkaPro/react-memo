@@ -1,21 +1,29 @@
 {
   "files": {
-    "main.css": "/react-memo/static/css/main.7d9d57d1.css",
-    "main.js": "/react-memo/static/js/main.33a9f3e1.js",
+    "main.css": "/react-memo/static/css/main.fc3bfd5a.css",
+    "main.js": "/react-memo/static/js/main.ce5010d0.js",
     "static/media/StratosSkyeng.woff2": "/react-memo/static/media/StratosSkyeng.ce93393e831d32412096.woff2",
     "static/media/celebration.png": "/react-memo/static/media/celebration.2577e3c3835ac1f32429.png",
     "static/media/dead.png": "/react-memo/static/media/dead.bfb3f81b5110f1b62252.png",
+    "static/media/visionGame.svg": "/react-memo/static/media/visionGame.e4a63cabe98acbf23d15.svg",
+    "static/media/visionGray.svg": "/react-memo/static/media/visionGray.4bf0f05e51e5cdc8c85c0a4ee4766802.svg",
+    "static/media/alohomora.svg": "/react-memo/static/media/alohomora.aedeaff459d57d9145aa.svg",
+    "static/media/puzzleGray.svg": "/react-memo/static/media/puzzleGray.e97fa3db0732895e2116fc1ed54c64d9.svg",
+    "static/media/puzzle.svg": "/react-memo/static/media/puzzle.4334f5ac406c55c7368878320cde9fd7.svg",
+    "static/media/vision.svg": "/react-memo/static/media/vision.58409908c67e92a2bb3f238c4494369c.svg",
     "static/media/сard-shirt.svg": "/react-memo/static/media/сard-shirt.ee1c021f7ee4ddc65293b8afcc81859d.svg",
     "static/media/cross.svg": "/react-memo/static/media/cross.a67a9b79b3c4428c4927895e6c820391.svg",
     "index.html": "/react-memo/index.html",
     "static/media/hearts.svg": "/react-memo/static/media/hearts.61a332d669720824455d75936096b657.svg",
     "static/media/spades.svg": "/react-memo/static/media/spades.d5657ff5be305701be575ad4403987f4.svg",
+    "static/media/diffBubble.svg": "/react-memo/static/media/diffBubble.052298d288dfe224542c.svg",
+    "static/media/nosupBubble.svg": "/react-memo/static/media/nosupBubble.db5f31210d0951feacb4.svg",
     "static/media/diamonds.svg": "/react-memo/static/media/diamonds.60153c09fb0fa0f9b5bab2a62d795342.svg",
-    "main.7d9d57d1.css.map": "/react-memo/static/css/main.7d9d57d1.css.map",
-    "main.33a9f3e1.js.map": "/react-memo/static/js/main.33a9f3e1.js.map"
+    "main.fc3bfd5a.css.map": "/react-memo/static/css/main.fc3bfd5a.css.map",
+    "main.ce5010d0.js.map": "/react-memo/static/js/main.ce5010d0.js.map"
   },
   "entrypoints": [
-    "static/css/main.7d9d57d1.css",
-    "static/js/main.33a9f3e1.js"
+    "static/css/main.fc3bfd5a.css",
+    "static/js/main.ce5010d0.js"
   ]
 }
