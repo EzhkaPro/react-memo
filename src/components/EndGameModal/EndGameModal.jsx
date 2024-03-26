@@ -1,19 +1,18 @@
-import styles from "./EndGameModal.module.css";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
+import styles from "./EndGameModal.module.css";
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
-import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { GameContext } from "../../context/Context";
-import { getLeaderBoard, postLeaderBoard } from "../../api";
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
-  const { level } = useContext(GameContext);
-  const [leader, setLeader] = useState("Пользователь");
+import { getLeaderBoard, addLeaderBoard } from "../../api";
+
+export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, isTop, achievement }) {
+  const [nameLeader, setNameLeader] = useState("Пользователь");
   const [newLeader, setNewLeader] = useState(false);
   const gameTime = gameDurationMinutes * 60 + gameDurationSeconds;
 
   useEffect(() => {
-    if (level === "9" && isWon) {
+    if (isTop) {
       getLeaderBoard().then(({ leaders }) => {
         leaders = leaders.sort(function (a, b) {
           return a.time - b.time;
@@ -26,9 +25,10 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   }, []);
 
   function addPlayerToLeaders() {
-    postLeaderBoard({
-      name: leader,
+    addLeaderBoard({
+      name: nameLeader,
       time: gameTime,
+      achievements: achievement,
     })
       .then(({ leaders }) => {
         console.log(leaders);
@@ -52,9 +52,9 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
         <input
           className={styles.input_user}
           type="text"
-          placeholder={"Пользователь "}
+          placeholder={"Пользователь"}
           onChange={e => {
-            setLeader(e.target.value);
+            setNameLeader(e.target.value);
           }}
           onKeyDown={e => {
             if (e.key === " ") {

@@ -13,10 +13,10 @@ export async function getLeaderBoard() {
   }
 }
 
-export async function postLeaderBoard({ position, name, time }) {
+export async function addLeaderBoard({ achievements, name, time }) {
   const response = await fetch(baseURL, {
     method: "POST",
-    body: JSON.stringify({ position, name, time }),
+    body: JSON.stringify({ achievements, name, time }),
   });
   if (response.status === 201) {
     const data = await response.json();

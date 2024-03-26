@@ -8,9 +8,9 @@ const initialState = {
 };
 
 export const GameContext = createContext(initialState);
+
 export const GameProvider = ({ children }) => {
   const [easyMode, setEasyMode] = useState(false);
-  const [level, setLevel] = useState(null);
 
-  return <GameContext.Provider value={{ easyMode, setEasyMode, level, setLevel }}>{children}</GameContext.Provider>;
+  return <GameContext.Provider value={{ easyMode, setEasyMode }}>{children}</GameContext.Provider>;
 };
