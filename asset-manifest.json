@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/react-memo/static/css/main.fd2099ff.css",
-    "main.js": "/react-memo/static/js/main.279d81db.js",
+    "main.css": "/react-memo/static/css/main.ab250188.css",
+    "main.js": "/react-memo/static/js/main.29f5458d.js",
     "static/media/StratosSkyeng.woff2": "/react-memo/static/media/StratosSkyeng.ce93393e831d32412096.woff2",
     "static/media/celebration.png": "/react-memo/static/media/celebration.2577e3c3835ac1f32429.png",
     "static/media/dead.png": "/react-memo/static/media/dead.bfb3f81b5110f1b62252.png",
     "static/media/visionGame.svg": "/react-memo/static/media/visionGame.e4a63cabe98acbf23d15.svg",
-    "static/media/visionGray.svg": "/react-memo/static/media/visionGray.f5382db30130149edbe587ab76071884.svg",
+    "static/media/visionGray.svg": "/react-memo/static/media/visionGray.2435e902ac5ab9bcaefdb9e54649742d.svg",
+    "static/media/puzzleGray.svg": "/react-memo/static/media/puzzleGray.831ecb81fbd4bbcc95deada7561c6cfe.svg",
+    "static/media/puzzle.svg": "/react-memo/static/media/puzzle.c6ee3278a86efe70de4cb9a441cd319a.svg",
     "static/media/alohomora.svg": "/react-memo/static/media/alohomora.aedeaff459d57d9145aa.svg",
-    "static/media/puzzleGray.svg": "/react-memo/static/media/puzzleGray.5f60ca32cf9f5221ff3e204823216c30.svg",
-    "static/media/puzzle.svg": "/react-memo/static/media/puzzle.bed320383c281b8e6a39ae55e8010cbb.svg",
-    "static/media/vision.svg": "/react-memo/static/media/vision.d13ed2437fe77e31fefac676d04fc730.svg",
+    "static/media/vision.svg": "/react-memo/static/media/vision.0d50739c53cbc595be9e67f6712a51de.svg",
     "static/media/сard-shirt.svg": "/react-memo/static/media/сard-shirt.ee1c021f7ee4ddc65293b8afcc81859d.svg",
     "static/media/cross.svg": "/react-memo/static/media/cross.a67a9b79b3c4428c4927895e6c820391.svg",
     "index.html": "/react-memo/index.html",
@@ -19,11 +19,11 @@
     "static/media/diffBubble.svg": "/react-memo/static/media/diffBubble.2337333aeaf0cde380a2.svg",
     "static/media/nosupBubble.svg": "/react-memo/static/media/nosupBubble.1e9d2ccebe9dc41aec88.svg",
     "static/media/diamonds.svg": "/react-memo/static/media/diamonds.60153c09fb0fa0f9b5bab2a62d795342.svg",
-    "main.fd2099ff.css.map": "/react-memo/static/css/main.fd2099ff.css.map",
-    "main.279d81db.js.map": "/react-memo/static/js/main.279d81db.js.map"
+    "main.ab250188.css.map": "/react-memo/static/css/main.ab250188.css.map",
+    "main.29f5458d.js.map": "/react-memo/static/js/main.29f5458d.js.map"
   },
   "entrypoints": [
-    "static/css/main.fd2099ff.css",
-    "static/js/main.279d81db.js"
+    "static/css/main.ab250188.css",
+    "static/js/main.29f5458d.js"
   ]
 }
