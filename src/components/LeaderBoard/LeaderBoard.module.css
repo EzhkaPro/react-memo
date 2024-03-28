@@ -90,6 +90,22 @@
   position: relative;
 }
 
+.puzzle {
+  background-image: url(./images/puzzle.svg);
+}
+
+.puzzleGray {
+  background-image: url(./images/puzzleGray.svg);
+}
+
+.vision {
+  background-image: url(./images/vision.svg);
+}
+
+.visionGray {
+  background-image: url(./images/visionGray.svg);
+}
+
 .puzzle,
 .puzzleGray,
 .vision,
@@ -103,7 +119,8 @@
   z-index: 0;
 }
 
-[hint1], [hint2] {
+[hint1],
+[hint2] {
   position: relative;
   cursor: hint;
 }
@@ -156,7 +173,7 @@
   text-align: center;
 }
 
-
-[hint1]:hover::after, [hint2]:hover::after {
+[hint1]:hover::after,
+[hint2]:hover::after {
   opacity: 1;
 }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
-import styles from "./LeaderBoardPage.module.css";
+import styles from "./LeaderboardPage.module.css";
 import { LeaderBoard } from "../../components/LeaderBoard/LeaderBoard";
 
 export function LeaderBoardPage() {

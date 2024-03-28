@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import styles from "./LeaderBoard.module.css";
 import { getLeaderBoard } from "../../api";
 
-import puzzleImageUrl from "./images/puzzle.svg";
-import puzzleGrayImageUrl from "./images/puzzleGray.svg";
-import visionImageUrl from "./images/vision.svg";
-import visionGrayImageUrl from "./images/visionGray.svg";
+//import puzzleImageUrl from "./images/puzzle.svg";
+//import puzzleGrayImageUrl from "./images/puzzleGray.svg";
+//import visionImageUrl from "./images/vision.svg";
+//import visionGrayImageUrl from "./images/visionGray.svg";
 
 export function LeaderBoard() {
   const [leaders, setLeaders] = useState([]);
@@ -42,23 +42,18 @@ export function LeaderBoard() {
                 {leader.achievements && (
                   <div className={styles.block_achievements}>
                     {leader.achievements.includes(1) ? (
-                      /*<button className={styles.puzzle} hint1="Игра пройдена в сложном режиме">*/
-                      <img src={puzzleImageUrl} alt="пазл" className={styles.puzzle} />
+                      <button className={styles.puzzle} hint1="Игра пройдена в сложном режиме"></button>
                     ) : (
-                      /* </button>*/
-                      <img src={puzzleGrayImageUrl} alt="пазл серый" className={styles.puzzleGray} />
+                      <button className={styles.puzzleGray}></button>
                     )}
                   </div>
                 )}
-
                 {leader.achievements && (
                   <div className={styles.block_achievements}>
                     {leader.achievements.includes(2) ? (
-                      /* <button className={styles.vision} hint2="Игра пройдена без супер-сил">*/
-                      <img src={visionImageUrl} alt="видение" className={styles.vision} />
+                      <button className={styles.vision} hint2="Игра пройдена без супер-сил"></button>
                     ) : (
-                      /*  </button> */
-                      <img src={visionGrayImageUrl} alt="видение серый" className={styles.visionGray} />
+                      <button className={styles.visionGray}></button>
                     )}
                   </div>
                 )}
