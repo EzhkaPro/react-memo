@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./LeaderBoard.module.css";
 import { getLeaderBoard } from "../../api";
 
-//import puzzleImageUrl from "./images/puzzle.svg";
-//import puzzleGrayImageUrl from "./images/puzzleGray.svg";
-//import visionImageUrl from "./images/vision.svg";
-//import visionGrayImageUrl from "./images/visionGray.svg";
-
 export function LeaderBoard() {
   const [leaders, setLeaders] = useState([]);
 
