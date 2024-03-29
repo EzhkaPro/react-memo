@@ -45,32 +45,28 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const imgAlt = isWon ? "celebration emodji" : "dead emodji";
 
   return (
-    <div className={styles.modal}>
-      <img className={styles.image} src={imgSrc} alt={imgAlt} />
-      <h2 className={styles.title}>{title}</h2>
+    <>
       {newLeader ? (
-        <input
-          className={styles.input_user}
-          type="text"
-          placeholder={"Пользователь"}
-          onChange={e => {
-            setNameLeader(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === " ") {
-              e.preventDefault(); // Запретить ввод пробела
-            }
-          }}
-        />
-      ) : (
-        <div></div>
-      )}
-      <p className={styles.description}>Затраченное время:</p>
-      <div className={styles.time}>
-        {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
-      </div>
-      {newLeader ? (
-        <>
+        <div className={styles.modal}>
+          <img className={styles.image} src={imgSrc} alt={imgAlt} />
+          <h2 className={styles.title}>{title}</h2>
+          <input
+            className={styles.input_user}
+            type="text"
+            placeholder={"Введите имя"}
+            onChange={e => {
+              setNameLeader(e.target.value);
+            }}
+            onKeyDown={e => {
+              if (e.key === " ") {
+                e.preventDefault(); // Запретить ввод пробела
+              }
+            }}
+          />
+          <p className={styles.description}>Затраченное время:</p>
+          <div className={styles.time}>
+            {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
+          </div>
           <Link to="/leaderboard">
             <Button
               onClick={() => {
@@ -85,25 +81,34 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
           <Button
             onClick={() => {
               addPlayerToLeaders();
-              onClick();
             }}
           >
-            Играть снова
+            Начать снова
           </Button>
-        </>
+          <Link
+            to="/leaderboard"
+            className={styles.linkBoard}
+            onClick={() => {
+              addPlayerToLeaders();
+            }}
+          >
+            Перейти к лидерборду
+          </Link>
+        </div>
       ) : (
-        <>
+        <div className={styles.modal}>
+          <img className={styles.image} src={imgSrc} alt={imgAlt} />
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.description}>Затраченное время:</p>
+          <div className={styles.time}>
+            {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
+          </div>
           <Button onClick={onClick}>Начать сначала</Button>
           <Link to="/">
             <Button> На главную</Button>
           </Link>
-        </>
+        </div>
       )}
-      {newLeader && (
-        <Link to="/leaderboard" className={styles.linkBoard}>
-          Перейти к лидерборду
-        </Link>
-      )}
-    </div>
+    </>
   );
 }
