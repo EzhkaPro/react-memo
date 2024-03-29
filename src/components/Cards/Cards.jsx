@@ -158,11 +158,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       setErrors(errors + 1);
 
       setTimeout(() => {
-        const resetCards = nextCards.map(card => ({
-          ...card,
-          open: false,
-        }));
-        setCards(resetCards);
+        const openCardsWithoutPairIds = openCardsWithoutPair.map(el => el.id);
+        console.log(openCardsWithoutPairIds);
+        setCards(
+          cards.map(el =>
+            openCardsWithoutPairIds.includes(el.id)
+              ? {
+                  ...el,
+                  open: false,
+                }
+              : el,
+          ),
+        );
       }, 500);
     } else {
       finishGame(STATUS_LOST);
