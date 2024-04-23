@@ -17,7 +17,8 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
         leaders = leaders.sort(function (a, b) {
           return a.time - b.time;
         });
-        if (leaders.length > 0 && leaders[0].time < gameTime) {
+        console.log(leaders[0].time, gameTime);
+        if (leaders.length < 10 || gameTime < leaders[9].time) {
           setNewLeader(true);
         }
       });
@@ -32,6 +33,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
     })
       .then(({ leaders }) => {
         console.log(leaders);
+        setNewLeader(true);
       })
       .catch(error => {
         alert(error.message);

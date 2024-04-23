@@ -78,6 +78,13 @@
   box-sizing: border-box;
 }
 
+.leaderboard_achievements {
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .achievements {
   width: 100px;
   display: flex;
@@ -110,6 +117,7 @@
 .puzzleGray,
 .vision,
 .visionGray {
+  border: none;
   height: 32px;
   width: 32px;
   background-repeat: no-repeat;
@@ -119,61 +127,31 @@
   z-index: 0;
 }
 
-[hint1],
-[hint2] {
+[hint] {
   position: relative;
-  cursor: hint;
 }
 
-[hint1]::after {
+[hint]::after {
   opacity: 0;
-  width: 172px;
-  height: 48px;
-  background-image: url(./images/diffBubble.svg);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  content: attr(hint1);
-  z-index: 1;
+  content: attr(hint);
   position: absolute;
-  top: -80px;
-  text-align: center;
-  transition: opacity 0.2s;
-
-  padding: 15px 15px;
-  border-radius: 12px;
-  color: rgb(0, 73, 128);
+  width: 180px;
+  padding: 60px 20px 20px;
+  color: #004980;
+  background: #c2f5ff;
   font-family: Inter;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
   text-align: center;
-}
-
-[hint2]::after {
-  opacity: 0;
-  width: 134px;
-  height: 48px;
-  background-image: url(./images/nosupBubble.svg);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  content: attr(hint2);
   z-index: 1;
-  position: absolute;
-  top: -80px;
-  text-align: center;
-  transition: opacity 0.2s;
-
-  padding: 15px 20px;
+  bottom: -5px;
+  transform: translate(-50%, 100%);
   border-radius: 12px;
-  color: rgb(0, 73, 128);
-  font-family: Inter;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 24px;
-  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.2s;
 }
 
-[hint1]:hover::after,
-[hint2]:hover::after {
+[hint]:hover::after {
   opacity: 1;
 }
