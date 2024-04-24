@@ -1,116 +1,78 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
-import styles from "./EndGameModal.module.css";
+import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
-import { getLeaderBoard, addLeaderBoard } from "../../api";
+import styles from "./EndGameModal.module.css";
+import { addLeaders } from "../../utils/api";
+import { ModeContext } from "../../context/ModeContext";
+import { useAchievements } from "../../context/AchievementContext";
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, isTop, achievement }) {
-  const [nameLeader, setNameLeader] = useState("Пользователь");
-  const [newLeader, setNewLeader] = useState(false);
-  const gameTime = gameDurationMinutes * 60 + gameDurationSeconds;
+export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+  const { achievements } = useAchievements();
+  const { level } = useContext(ModeContext);
+  const [username, setUsername] = useState("");
+  const handleUsername = e => {
+    setUsername(e.target.value);
+  };
 
-  useEffect(() => {
-    if (isTop) {
-      getLeaderBoard().then(({ leaders }) => {
-        leaders = leaders.sort(function (a, b) {
-          return a.time - b.time;
-        });
-        console.log(leaders[0].time, gameTime);
-        if (leaders.length < 10 || gameTime < leaders[9].time) {
-          setNewLeader(true);
-        }
-      });
+  const handleScore = () => {
+    if (username.trim() === "") {
+      alert("Введите имя");
+      console.log("Пользователь не введён, используется имя 'Пользователь'");
+      setUsername("Пользователь");
+      return;
     }
-  }, []);
-
-  function addPlayerToLeaders() {
-    addLeaderBoard({
-      name: nameLeader,
-      time: gameTime,
-      achievements: achievement,
-    })
-      .then(({ leaders }) => {
-        console.log(leaders);
-        setNewLeader(true);
+    const totalTimeInSeconds = gameDurationMinutes * 60 + gameDurationSeconds;
+    addLeaders({ name: username, time: totalTimeInSeconds, achievements: achievements })
+      .then(() => {
+        alert("Пользователь добавлен");
+        onClick();
       })
       .catch(error => {
-        alert(error.message);
+        console.warn(error);
+        alert("Не удалось добавить пользователя");
       });
-  }
+  };
 
-  const title = isWon ? (newLeader ? "Вы попали на Лидерборд!" : "Вы победили!") : "Вы проиграли!";
+  const title = isWon ? (level === "9" ? "Вы попали на лидерборд!" : "Вы победили!") : "Вы проиграли!";
 
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
 
   const imgAlt = isWon ? "celebration emodji" : "dead emodji";
 
   return (
-    <>
-      {newLeader ? (
-        <div className={styles.modal}>
-          <img className={styles.image} src={imgSrc} alt={imgAlt} />
-          <h2 className={styles.title}>{title}</h2>
-          <input
-            className={styles.input_user}
-            type="text"
-            placeholder={"Введите имя"}
-            onChange={e => {
-              setNameLeader(e.target.value);
-            }}
-            onKeyDown={e => {
-              if (e.key === " ") {
-                e.preventDefault(); // Запретить ввод пробела
-              }
-            }}
-          />
-          <p className={styles.description}>Затраченное время:</p>
-          <div className={styles.time}>
-            {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
-          </div>
-          <Link to="/leaderboard">
-            <Button
-              onClick={() => {
-                addPlayerToLeaders();
-                onClick();
-              }}
-            >
-              Отправить результат
-            </Button>
-          </Link>
-
-          <Button
-            onClick={() => {
-              addPlayerToLeaders();
-            }}
-          >
-            Начать снова
-          </Button>
-          <Link
-            to="/leaderboard"
-            className={styles.linkBoard}
-            onClick={() => {
-              addPlayerToLeaders();
-            }}
-          >
-            Перейти к лидерборду
-          </Link>
-        </div>
-      ) : (
-        <div className={styles.modal}>
-          <img className={styles.image} src={imgSrc} alt={imgAlt} />
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.description}>Затраченное время:</p>
-          <div className={styles.time}>
-            {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
-          </div>
-          <Button onClick={onClick}>Начать сначала</Button>
-          <Link to="/">
-            <Button> На главную</Button>
-          </Link>
-        </div>
+    <div className={styles.modal}>
+      <img className={styles.image} src={imgSrc} alt={imgAlt} />
+      <div className={styles.title}>{title}</div>
+      {isWon && level === "9" && (
+        <input
+          className={styles.input_user}
+          type="text"
+          value={username}
+          onChange={handleUsername}
+          placeholder="Пользователь"
+        />
       )}
-    </>
+      {isWon && level === "9" && (
+        <button className={styles.buttonmode_addscore} onClick={() => handleScore()}>
+          Добавить пользователя
+        </button>
+      )}
+      <p className={styles.description}>Затраченное время:</p>
+      <div className={styles.time}>
+        {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
+      </div>
+
+      <Button onClick={onClick}>Начать сначала</Button>
+      <Link to="/">
+        <Button>Вернуться к выбору сложности</Button>
+      </Link>
+      {isWon && level === "9" && (
+        <Link className={styles.title_leaderboard} to="/leaderboard">
+          Перейти к лидерборду
+        </Link>
+      )}
+    </div>
   );
 }
