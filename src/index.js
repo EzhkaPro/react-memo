@@ -3,13 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
-import { GameProvider } from "./context/Context";
+import { ModeProvider } from "./context/ModeContext";
+import { AchievementsProvider } from "./context/AchievementContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <GameProvider>
-      <RouterProvider router={router}></RouterProvider>
-    </GameProvider>
+    <AchievementsProvider>
+      <ModeProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </ModeProvider>
+    </AchievementsProvider>
   </React.StrictMode>,
 );

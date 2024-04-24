@@ -1,11 +1,12 @@
 import { shuffle } from "lodash";
-import { useContext, useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
-import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
-import { GameContext } from "../../context/Context";
+import { useContext, useEffect, useState } from "react";
+import { ModeContext } from "../../context/ModeContext";
+import styles from "./Cards.module.css";
+import { useAchievements } from "../../context/AchievementContext";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -14,8 +15,6 @@ const STATUS_WON = "STATUS_WON";
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
-const STATUS_PAUSED = "STATUS_PAUSED";
-let pauseTimer = false;
 
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
@@ -29,19 +28,9 @@ function getTimerValue(startDate, endDate) {
     endDate = new Date();
   }
 
-  if (pauseTimer === true) {
-    const diffInSecconds = Math.floor((endDate.getTime() - 5000 - startDate.getTime()) / 1000);
-    const minutes = Math.floor(diffInSecconds / 60);
-    const seconds = diffInSecconds % 60;
-    return {
-      minutes,
-      seconds,
-    };
-  }
-
-  const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
-  const minutes = Math.floor(diffInSecconds / 60);
-  const seconds = diffInSecconds % 60;
+  const diffInSeconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+  const minutes = Math.floor(diffInSeconds / 60);
+  const seconds = diffInSeconds % 60;
   return {
     minutes,
     seconds,
@@ -55,174 +44,205 @@ function getTimerValue(startDate, endDate) {
  */
 
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const { isEnabled } = useContext(ModeContext);
+  const { addAchievement, resetAchievements } = useAchievements();
+  // const { addAchievement, resetAchievements } = useContext(AchievementsContex);
   const [cards, setCards] = useState([]);
-  const { easyMode } = useContext(GameContext);
+
   const [status, setStatus] = useState(STATUS_PREVIEW);
-  const [errors, setErrors] = useState(0);
+
   const [gameStartDate, setGameStartDate] = useState(null);
   const [gameEndDate, setGameEndDate] = useState(null);
 
-  let isTop = !easyMode && pairsCount === 9 && status === STATUS_WON;
-
-  // Стейт для таймера, высчитывается в setInteval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
     seconds: 0,
     minutes: 0,
   });
 
-  const [superPowers, setSuperPowers] = useState({
-    vision: true,
-    alohomora: true,
-  });
+  const maxAttempts = isEnabled ? 3 : 1;
+  const [attempts, setAttempts] = useState(maxAttempts);
+  const [isVision, setIsVision] = useState(false);
+  const [isVisionActive, seIisVisionActive] = useState(false);
+  const [isTimerStop, setIsTimerStop] = useState(false);
+  const [isAlohomora, setIsAlohomora] = useState(false);
 
-  const [achievement, setAchievement] = useState(easyMode ? [1] : []);
+  const vision = () => {
+    setIsTimerStop(true);
+    if (isVision) {
+      return;
+    }
+
+    seIisVisionActive(true);
+    setCards(prevCards => {
+      return prevCards.map(card => {
+        return {
+          ...card,
+          open: true,
+        };
+      });
+    });
+    setTimeout(() => {
+      setCards(prevCards => {
+        return prevCards.map(card => {
+          if (card.guessed) {
+            return {
+              ...card,
+              open: true,
+            };
+          }
+          return {
+            ...card,
+            open: false,
+          };
+        });
+      });
+      seIisVisionActive(false);
+      setIsVision(true);
+      setIsTimerStop(false);
+      let newDate = new Date(gameStartDate);
+      newDate.setSeconds(newDate.getSeconds() + 5);
+      setGameStartDate(newDate);
+    }, 5000);
+  };
+
+  const alohomora = () => {
+    if (isVisionActive) {
+      return;
+    }
+
+    const closedCards = cards.filter(card => !card.open && !card.guessed);
+
+    if (closedCards.length < 2) {
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * closedCards.length);
+    const firstCard = closedCards[randomIndex];
+
+    const secondCard = closedCards.find(
+      card => card.id !== firstCard.id && card.rank === firstCard.rank && card.suit === firstCard.suit,
+    );
+
+    if (secondCard) {
+      const nextCards = cards.map(card => {
+        if (card.id === firstCard.id || card.id === secondCard.id) {
+          return {
+            ...card,
+            open: true,
+            guessed: true,
+          };
+        }
+        return card;
+      });
+
+      setCards(nextCards);
+      setIsAlohomora(true);
+    }
+  };
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
-    setErrors(0);
+
+    if (status === STATUS_WON) {
+      if (!isAlohomora && !isVision) {
+        addAchievement(1);
+      }
+      if (!isEnabled) {
+        addAchievement(2);
+      }
+    }
   }
 
   function startGame() {
-    pauseTimer = false;
     const startDate = new Date();
     setGameEndDate(null);
     setGameStartDate(startDate);
     setTimer(getTimerValue(startDate, null));
     setStatus(STATUS_IN_PROGRESS);
-    setErrors(0);
+    resetAchievements();
+    setIsVision(false);
+    setIsAlohomora(false);
   }
+
   function resetGame() {
-    pauseTimer = false;
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
-    setErrors(0);
+    setAttempts(isEnabled ? 3 : 1);
+    resetAchievements();
+    setIsVision(false);
+    setIsAlohomora(false);
   }
 
-  /**
-   * Обработка основного действия в игре - открытие карты.
-   * После открытия карты игра может пепереходит в следующие состояния
-   * - "Игрок выиграл", если на поле открыты все карты
-   * - "Игрок проиграл", если на поле есть две открытые карты без пары
-   * - "Игра продолжается", если не случилось первых двух условий
-   */
-  const openCard = clickedCard => {
-    // Если карта уже открыта, то ничего не делаем
-    if (clickedCard.open) {
-      return;
-    }
-    // Игровое поле после открытия кликнутой карты
-    const nextCards = cards.map(card => {
-      if (card.id !== clickedCard.id) {
-        return card;
-      }
-
-      return {
-        ...card,
-        open: true,
-      };
-    });
-
-    setCards(nextCards);
-
-    const isPlayerWon = nextCards.every(card => card.open);
-
-    // Победа - все карты на поле открыты
-    if (isPlayerWon) {
-      finishGame(STATUS_WON);
-      return;
-    }
-
-    // Открытые карты на игровом поле
-    const openCards = nextCards.filter(card => card.open);
-
-    // Ищем открытые карты, у которых нет пары среди других открытых
-    const openCardsWithoutPair = openCards.filter(card => {
-      const sameCards = openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
-
-      if (sameCards.length < 2) {
-        return true;
-      }
-
-      return false;
-    });
-
-    const playerLost = openCardsWithoutPair.length >= 2;
-
-    if (!playerLost) return;
-
-    // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-    if (easyMode && errors < 2) {
-      setErrors(errors + 1);
-
-      setTimeout(() => {
-        const openCardsWithoutPairIds = openCardsWithoutPair.map(el => el.id);
-        console.log(openCardsWithoutPairIds);
-        setCards(
-          cards.map(el =>
-            openCardsWithoutPairIds.includes(el.id)
-              ? {
-                  ...el,
-                  open: false,
-                }
-              : el,
-          ),
-        );
-      }, 500);
-    } else {
+  const handleAttempts = () => {
+    const updatedAttempts = attempts - 1;
+    setAttempts(updatedAttempts);
+    if (updatedAttempts <= 0) {
       finishGame(STATUS_LOST);
-      return;
     }
-    // ... игра продолжается
   };
 
-  function vision() {
-    setSuperPowers({ ...superPowers, vision: false });
-    const openedCards = cards;
-    const viewCards = cards.map(card => ({
-      ...card,
-      open: true,
-    }));
-
-    setCards(viewCards);
-    pauseTimer = true;
-    setStatus(STATUS_PAUSED);
-
-    setTimeout(() => {
-      setCards(openedCards);
-      setStatus(STATUS_IN_PROGRESS);
-    }, 5000);
-
-    if (!achievement.includes(2)) {
-      setAchievement([...achievement, 2]);
+  const openCard = clickedCard => {
+    if (clickedCard.open || status !== STATUS_IN_PROGRESS) {
+      return;
     }
-  }
 
-  function alohomora() {
-    setSuperPowers({ ...superPowers, alohomora: false });
+    const openCards = cards.filter(card => card.open && !card.guessed);
 
-    const closedCards = cards.filter(card => !card.open);
-    const randomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
-    const pairsCard = closedCards.filter(
-      closedCard =>
-        closedCard.suit === randomCard.suit && closedCard.rank === randomCard.rank && randomCard.id !== closedCard.id,
+    if (openCards.length >= 2) {
+      return;
+    }
+
+    // Игровое поле после открытия кликнутой карты
+    const nextCards = cards.map(card => {
+      if (card.id === clickedCard.id || card.guessed) {
+        return {
+          ...card,
+          open: true,
+        };
+      }
+      return card;
+    });
+    setCards(nextCards);
+
+    const openPairs = nextCards.filter(card => card.open && !card.guessed);
+    const guessedPairs = openPairs.filter(card =>
+      openPairs.some(openCard => card.id !== openCard.id && card.suit === openCard.suit && card.rank === openCard.rank),
     );
-    setCards(
-      cards.map(card => {
-        if (card === randomCard || card === pairsCard[0]) {
-          return { ...card, open: true };
-        } else {
-          return card;
+
+    if (guessedPairs.length === 2) {
+      const updatedCards = nextCards.map(card => {
+        if (guessedPairs.some(guessedCard => card.id === guessedCard.id)) {
+          return {
+            ...card,
+            guessed: true,
+          };
         }
-      }),
-    );
-
-    if (!achievement.includes(2)) {
-      setAchievement([...achievement, 2]);
+        return card;
+      });
+      setCards(updatedCards);
+      const isPlayerWon = updatedCards.every(card => card.guessed);
+      if (isPlayerWon) {
+        finishGame(STATUS_WON);
+      }
+    } else if (openPairs.length === 2) {
+      handleAttempts();
+      setTimeout(() => {
+        const resetCards = nextCards.map(card => {
+          if (!card.guessed) {
+            return {
+              ...card,
+              open: false,
+            };
+          }
+          return card;
+        });
+        setCards(resetCards);
+      }, 1000);
     }
-  }
+  };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
 
@@ -233,7 +253,6 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return;
     }
 
-    // В статусе превью мы
     if (pairsCount > 36) {
       alert("Столько пар сделать невозможно");
       return;
@@ -254,20 +273,21 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   // Обновляем значение таймера в интервале
   useEffect(() => {
-    if (status !== STATUS_PAUSED) {
-      const intervalId = setInterval(() => {
-        setTimer(getTimerValue(gameStartDate, gameEndDate));
-      }, 300);
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [gameStartDate, gameEndDate, status]);
+    const intervalId = setInterval(() => {
+      if (isTimerStop) {
+        return;
+      }
+      setTimer(getTimerValue(gameStartDate, gameEndDate));
+    }, 300);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [gameStartDate, gameEndDate, isTimerStop]);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={status === STATUS_PAUSED ? styles.pause : styles.timer}>
+        <div className={styles.timer}>
           {status === STATUS_PREVIEW ? (
             <div>
               <p className={styles.previewText}>Запоминайте пары!</p>
@@ -287,23 +307,22 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-
         {status === STATUS_IN_PROGRESS ? (
           <>
-            <div className={styles.containerImg}>
+            <div className={styles.bar}>
               <button
                 className={styles.vision}
                 title="Прозрение"
                 hint="На 5 секунд показываются все карты. Таймер длительности игры на это время останавливается."
                 onClick={vision}
-                disabled={!superPowers.vision}
+                disabled={isVision}
               />
               <button
                 className={styles.alohomora}
                 title="Алохомора"
                 hint="Открывается случайная пара карт."
                 onClick={alohomora}
-                disabled={!superPowers.alohomora}
+                disabled={isAlohomora || isVisionActive}
               />
             </div>
             <Button onClick={resetGame}>Начать заново</Button>
@@ -322,23 +341,27 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
-      {easyMode === true ? (
-        <div className={styles.counter_wrapper}>
-          <div className={styles.counter_txt}> Количество попыток: {errors}</div>
+
+      <div className={styles.footer_box}>
+        <div className={styles.bar_element}>
+          {isEnabled ? <p className={styles.attempts_txt}>Попытки: </p> : ""}
+          {isEnabled ? (
+            <p className={styles.attempts_counter}>
+              {attempts} / {maxAttempts}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
-      ) : (
-        <div></div>
-      )}
+      </div>
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>
           <EndGameModal
-            isTop={isTop}
             isWon={status === STATUS_WON}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
-            achievement={achievement}
           />
         </div>
       ) : null}
